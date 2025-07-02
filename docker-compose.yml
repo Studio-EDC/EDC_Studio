@@ -11,7 +11,7 @@ services:
       - edc-network
 
   backend:
-    image: itziarmensaupc/edc_studio_backend:0.1.0
+    image: itziarmensaupc/edc_studio_backend:0.1.1
     container_name: edc_backend
     platform: linux/amd64
     ports:
@@ -23,7 +23,7 @@ services:
       - POSTGRES_PASS=admin
       - POSTGRES_HOST=edc_postgres
       - POSTGRES_PORT=5432
-      - RUNTIME_PATH=/Volumes/DISK/Projects/Work/EDC/Compose/runtime
+      - RUNTIME_PATH=C:/rute/runtime
       - TYPE=compose
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -45,7 +45,7 @@ services:
       - edc-network
 
   frontend:
-    image: itziarmensaupc/edc_studio:0.0.3
+    image: itziarmensaupc/edc_studio:0.0.5
     container_name: edc_studio
     platform: linux/amd64
     ports:
