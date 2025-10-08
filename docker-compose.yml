@@ -45,7 +45,7 @@ services:
       - odoo-15_proxy-tier
 
   frontend:
-    image: agrixelsupc/edc_studio:0:1
+    image: agrixelsupc/edc_studio:0.1.0
     container_name: edc_studio
     platform: linux/amd64
     ports:
