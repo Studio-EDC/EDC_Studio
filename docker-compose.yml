@@ -49,12 +49,12 @@ services:
     container_name: edc_studio
     platform: linux/amd64
     ports:
-      - "3000:3000"
+      - "3004:3000"
     depends_on:
       - backend
     environment:
       - VIRTUAL_HOST=stakeholders-pre.widening.eu
-      - VIRTUAL_PORT=3000
+      - VIRTUAL_PORT=3004
     networks:
       - odoo-15_proxy-tier
 
