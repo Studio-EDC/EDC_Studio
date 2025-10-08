@@ -11,7 +11,7 @@ services:
       - odoo-15_proxy-tier
 
   backend:
-    image: itziarmensaupc/edc_studio_backend:0.1.1
+    image: agrixelsupc/edc_studio_backend:0.1.4
     container_name: edc_backend
     platform: linux/amd64
     ports:
