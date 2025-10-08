@@ -15,7 +15,7 @@ services:
     container_name: edc_backend
     platform: linux/amd64
     ports:
-      - "8000:8000"
+      - "8003:8000"
     environment:
       - MONGODB_URI=mongodb://edc_mongo:27017
       - MONGODB_DB=edc_backend
@@ -38,14 +38,14 @@ services:
     container_name: edc_data_pond
     platform: linux/amd64
     ports:
-      - "8001:8001"
+      - "8004:8001"
     depends_on:
       - backend
     networks:
       - odoo-15_proxy-tier
 
   frontend:
-    image: itziarmensaupc/edc_studio:0.0.5
+    image: agrixelsupc/edc_studio:0:1
     container_name: edc_studio
     platform: linux/amd64
     ports:
