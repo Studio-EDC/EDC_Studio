@@ -54,7 +54,7 @@ services:
       - backend
     environment:
       - VIRTUAL_HOST=stakeholders-pre.widening.eu
-      - VIRTUAL_PORT=3004
+      - VIRTUAL_PORT=3000
     networks:
       - odoo-15_proxy-tier
 
