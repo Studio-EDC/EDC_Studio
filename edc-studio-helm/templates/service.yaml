@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.appName }}
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: {{ .Values.appName }}
+  ports:
+    {{- if .Values.mongo.enabled }}
+    - name: mongo
+      port: {{ .Values.mongo.port }}
+      targetPort: {{ .Values.mongo.port }}
+    {{- end }}
+    {{- if .Values.backend.enabled }}
+    - name: backend
+      port: {{ .Values.backend.port }}
+      targetPort: {{ .Values.backend.port }}
+    {{- end }}
+    {{- if .Values.frontend.enabled }}
+    - name: frontend
+      port: {{ .Values.frontend.port }}
+      targetPort: {{ .Values.frontend.port }}
+    {{- end }}
+    {{- if .Values.datapond.enabled }}
+    - name: datapond
+      port: {{ .Values.datapond.port }}
+      targetPort: {{ .Values.datapond.port }}
+    {{- end }}
+  type: ClusterIP

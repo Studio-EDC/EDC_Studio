@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.appName }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.appName }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.appName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.appName }}
+    spec:
+      containers:
+        {{- if .Values.mongo.enabled }}
+        - name: mongo
+          image: {{ .Values.mongo.image }}
+          ports:
+            - containerPort: {{ .Values.mongo.port }}
+          {{- if .Values.mongo.env }}
+          env:
+            {{- range $key, $value := .Values.mongo.env }}
+            - name: {{ $key }}
+              value: "{{ $value }}"
+            {{- end }}
+          {{- end }}
+          volumeMounts:
+            - name: mongo-data
+              mountPath: /data/db
+        {{- end }}
+
+        {{- if .Values.backend.enabled }}
+        - name: backend
+          image: {{ .Values.backend.image }}
+          ports:
+            - containerPort: {{ .Values.backend.port }}
+          {{- if .Values.backend.env }}
+          env:
+            {{- range $key, $value := .Values.backend.env }}
+            - name: {{ $key }}
+              value: "{{ $value }}"
+            {{- end }}
+          {{- end }}
+        {{- end }}
+
+        {{- if .Values.frontend.enabled }}
+        - name: frontend
+          image: {{ .Values.frontend.image }}
+          ports:
+            - containerPort: {{ .Values.frontend.port }}
+        {{- end }}
+
+        {{- if .Values.datapond.enabled }}
+        - name: datapond
+          image: {{ .Values.datapond.image }}
+          ports:
+            - containerPort: {{ .Values.datapond.port }}
+        {{- end }}
+
+      volumes:
+        - name: mongo-data
+          emptyDir: {}

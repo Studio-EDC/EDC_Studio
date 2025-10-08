@@ -1,0 +1,42 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.appName }}-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2$3
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "200m"
+spec:
+  ingressClassName: nginx
+  rules:
+  {{- range .Values.ingress.hosts }}
+  - host: {{ . }}
+    http:
+      paths:
+        # --- Backend principal (/api y subrutas) ---
+        - path: /api(/|$)(.*)
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: {{ $.Values.appName }}
+              port:
+                number: {{ $.Values.backend.port }}
+
+        # --- DataPond (/pond y subrutas) ---
+        - path: /pond(/|$)(.*)
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: {{ $.Values.appName }}
+              port:
+                number: {{ $.Values.datapond.port }}
+
+        # --- Frontend (todas las demás rutas) ---
+        - path: /(.*)
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: {{ $.Values.appName }}
+              port:
+                number: {{ $.Values.frontend.port }}
+  {{- end }}
