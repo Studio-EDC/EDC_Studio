@@ -8,7 +8,7 @@ services:
     volumes:
       - mongo_data:/data/db
     networks:
-      - edc-network
+      - odoo-15_proxy-tier
 
   backend:
     image: itziarmensaupc/edc_studio_backend:0.1.1
@@ -31,7 +31,7 @@ services:
     depends_on:
       - mongo
     networks:
-      - edc-network
+      - odoo-15_proxy-tier
 
   data_pond:
     image: itziarmensaupc/edc_data_pond:latest
@@ -42,7 +42,7 @@ services:
     depends_on:
       - backend
     networks:
-      - edc-network
+      - odoo-15_proxy-tier
 
   frontend:
     image: itziarmensaupc/edc_studio:0.0.5
@@ -52,12 +52,15 @@ services:
       - "3000:3000"
     depends_on:
       - backend
+    environment:
+      - VIRTUAL_HOST=stakeholders-pre.widening.eu
+      - VIRTUAL_PORT=3000
     networks:
-      - edc-network
+      - odoo-15_proxy-tier
 
 volumes:
   mongo_data:
 
 networks:
-  edc-network:
+  odoo-15_proxy-tier:
     external: true
