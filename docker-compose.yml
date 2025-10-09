@@ -18,7 +18,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - edc-network
+      - odoo-15_proxy-tier
 
   backend:
     image: agrixelsupc/edc_studio_backend:0.1.8
