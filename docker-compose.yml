@@ -3,15 +3,25 @@ services:
   mongo:
     image: mongo:8.0
     container_name: edc_mongo
-    ports:
-      - "27017:27017"
     volumes:
       - mongo_data:/data/db
     networks:
       - odoo-15_proxy-tier
 
+  postgres:
+    image: postgres:15
+    container_name: edc_postgres
+    environment:
+      POSTGRES_DB: edc
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - edc-network
+
   backend:
-    image: agrixelsupc/edc_studio_backend:0.1.4
+    image: agrixelsupc/edc_studio_backend:0.1.8
     container_name: edc_backend
     platform: linux/amd64
     ports:
@@ -65,6 +75,7 @@ services:
 
 volumes:
   mongo_data:
+  postgres_data:
 
 networks:
   odoo-15_proxy-tier:
