@@ -45,14 +45,13 @@ RUNTIME_PATH=/ruta/a/tu/carpeta/runtime
 
 ## 🚀 How to Start the Environment
 
-Run the initialization script:
+Run the docker compose :
 
 ```bash
-sh init.sh
+docker compose pull && docker compose up -d
 ```
 
-This script:
-- Creates the external edc-network if it doesn't exist.
+This:
 - Starts all containers defined in docker-compose.yml.
 
 ---
