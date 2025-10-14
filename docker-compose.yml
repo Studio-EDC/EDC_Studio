@@ -69,6 +69,8 @@ services:
     depends_on:
       - backend
     environment:
+      - ENDPOINT_BASE=https://upcxels-pre.widening.eu
+      - ENDPOINT_DATA_POND=https://pro-pre.widening.eu
       - VIRTUAL_HOST=stakeholders-pre.widening.eu
       - VIRTUAL_PORT=3000
     networks:
