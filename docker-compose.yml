@@ -6,7 +6,7 @@ services:
     volumes:
       - mongo_data:/data/db
     networks:
-      - odoo-15_proxy-tier
+      - edc_network
 
   postgres:
     image: postgres:15
@@ -18,7 +18,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - odoo-15_proxy-tier
+      - edc_network
 
   backend:
     image: agrixelsupc/edc_studio_backend:latest
@@ -33,8 +33,8 @@ services:
       - POSTGRES_PASS=admin
       - POSTGRES_HOST=edc_postgres
       - POSTGRES_PORT=5432
-      - RUNTIME_PATH=/home/odoo/EDC_Studio/runtime
-      - NETWORK_NAME=odoo-15_proxy-tier
+      - RUNTIME_PATH=/path/to/EDC_Studio/runtime
+      - NETWORK_NAME=edc_network
       - TYPE=compose
       - VIRTUAL_HOST=upcxels-pre.widening.eu
       - VIRTUAL_PORT=8000
@@ -44,10 +44,10 @@ services:
     depends_on:
       - mongo
     networks:
-      - odoo-15_proxy-tier
+      - edc_network
 
   data_pond:
-    image: itziarmensaupc/edc_data_pond:latest
+    image: agrixelsupc/edc_data_pond:latest
     container_name: edc_data_pond
     platform: linux/amd64
     ports:
@@ -58,7 +58,7 @@ services:
     depends_on:
       - backend
     networks:
-      - odoo-15_proxy-tier
+      - edc_network
 
   frontend:
     image: agrixelsupc/edc_studio:latest
@@ -74,12 +74,12 @@ services:
     volumes:
       - .env.frontend:/usr/share/nginx/html/assets/assets/.env
     networks:
-      - odoo-15_proxy-tier
+      - edc_network
 
 volumes:
   mongo_data:
   postgres_data:
 
 networks:
-  odoo-15_proxy-tier:
+  edc_network:
     external: true

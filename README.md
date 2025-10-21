@@ -3,6 +3,7 @@
 This project provides a complete development and deployment environment for **EDC Studio**, composed of the following services:
 
 - **MongoDB** as the main database.
+- **Postgres** as the main database of the EDCs.
 - **Backend** built with Python and FastAPI.
 - **Data Pond** as a microservice for data management or transformation.
 - **Frontend** built with Flutter Web.
@@ -13,10 +14,11 @@ This project provides a complete development and deployment environment for **ED
 
 ```yaml
 services:
-  mongo:         # Base de datos MongoDB
-  backend:       # API principal del sistema EDC Studio
-  data_pond:     # Microservicio adicional conectado al backend
-  frontend:      # Interfaz gráfica de usuario
+  mongo:         # MongoDB
+  postgres:      # BBDD EDCs
+  backend:       # Principal API of the EDC Studio system
+  data_pond:     # Additional microservice to store files
+  frontend:      # Graphic interface for the user
 ```
 ---
 
@@ -38,7 +40,7 @@ runtime/
 Before starting the environment, you must update the `RUNTIME_PATH` environment variable inside the `backend` service in the `docker-compose.yml` file:
 
 ```yaml
-RUNTIME_PATH=/ruta/a/tu/carpeta/runtime
+RUNTIME_PATH=/path/EDC_Studio/runtime
 ```
 
 ---
