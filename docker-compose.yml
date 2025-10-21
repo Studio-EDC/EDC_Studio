@@ -3,19 +3,29 @@ services:
   mongo:
     image: mongo:8.0
     container_name: edc_mongo
-    ports:
-      - "27017:27017"
     volumes:
       - mongo_data:/data/db
     networks:
-      - edc-network
+      - odoo-15_proxy-tier
+
+  postgres:
+    image: postgres:15
+    container_name: edc_postgres
+    environment:
+      POSTGRES_DB: edc
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - odoo-15_proxy-tier
 
   backend:
-    image: itziarmensaupc/edc_studio_backend:0.1.1
+    image: agrixelsupc/edc_studio_backend:latest
     container_name: edc_backend
     platform: linux/amd64
     ports:
-      - "8000:8000"
+      - "8003:8000"
     environment:
       - MONGODB_URI=mongodb://edc_mongo:27017
       - MONGODB_DB=edc_backend
@@ -23,41 +33,53 @@ services:
       - POSTGRES_PASS=admin
       - POSTGRES_HOST=edc_postgres
       - POSTGRES_PORT=5432
-      - RUNTIME_PATH=C:/rute/runtime
+      - RUNTIME_PATH=/home/odoo/EDC_Studio/runtime
+      - NETWORK_NAME=odoo-15_proxy-tier
       - TYPE=compose
+      - VIRTUAL_HOST=upcxels-pre.widening.eu
+      - VIRTUAL_PORT=8000
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./runtime:/app/runtime
     depends_on:
       - mongo
     networks:
-      - edc-network
+      - odoo-15_proxy-tier
 
   data_pond:
     image: itziarmensaupc/edc_data_pond:latest
     container_name: edc_data_pond
     platform: linux/amd64
     ports:
-      - "8001:8001"
+      - "8004:8001"
+    environment:
+      - VIRTUAL_HOST=pro-pre.widening.eu
+      - VIRTUAL_PORT=8001
     depends_on:
       - backend
     networks:
-      - edc-network
+      - odoo-15_proxy-tier
 
   frontend:
-    image: itziarmensaupc/edc_studio:0.0.5
+    image: agrixelsupc/edc_studio:latest
     container_name: edc_studio
     platform: linux/amd64
     ports:
-      - "3000:3000"
+      - "3004:3000"
     depends_on:
       - backend
+    environment:
+      - VIRTUAL_HOST=stakeholders-pre.widening.eu
+      - VIRTUAL_PORT=3000
+    volumes:
+      - .env.frontend:/usr/share/nginx/html/assets/assets/.env
     networks:
-      - edc-network
+      - odoo-15_proxy-tier
 
 volumes:
   mongo_data:
+  postgres_data:
 
 networks:
-  edc-network:
+  odoo-15_proxy-tier:
     external: true
