@@ -26,31 +26,31 @@ services:
 
 ```csharp
 runtime/
-├── 685bba5d800fd3e2d89bb...     # Dynamically generated directories (DO NOT commit to Git)
-├── 685cf1d30531139e715751...
-├── docker-compose.yml           # Main orchestration file
-├── init.sh                      # Initialization script
+  ├── 685bba5d800fd3e2d89bb...     # Dynamically generated directories (DO NOT commit to Git)
+  ├── 685cf1d30531139e715751...
+├── docker-compose.local.yml           # Main orchestration file for local environment
+├── docker-compose.prod.yml           # Main orchestration file for prod environment
+├── .env                            # environment variables
+├── .env.frontend                 # environment variables for frontend
+├── start_local.sh                      # Initialization script for local environment
+├── start_prod.sh                      # Initialization script for prod environment
 └── README.md                    
-```
-
----
-
-## ⚙️ Configuration
-
-Before starting the environment, you must update the `RUNTIME_PATH` environment variable inside the `backend` service in the `docker-compose.yml` file:
-
-```yaml
-RUNTIME_PATH=/path/EDC_Studio/runtime
 ```
 
 ---
 
 ## 🚀 How to Start the Environment
 
-Run the docker compose :
+Run the initialization script:
 
 ```bash
-docker compose pull && docker compose up -d
+./start_local.sh   
+```
+
+or
+
+```bash
+./start_prod.sh   
 ```
 
 This:
@@ -58,7 +58,31 @@ This:
 
 ---
 
-## 🌐 Acceso a los servicios
+## ⚙️ Environment Configuration
+
+Before running the production environment, make sure to configure your **Nginx** and **Let's Encrypt** variables in the `.env` file:
+
+```bash
+# Nginx / Let's Encrypt
+VIRTUAL_HOST_BACKEND=backend.example.com
+VIRTUAL_HOST_DATAPOND=datapond.example.com
+VIRTUAL_HOST_FRONTEND=app.example.com
+
+VIRTUAL_PORT_BACKEND=8000
+VIRTUAL_PORT_DATAPOND=8001
+VIRTUAL_PORT_FRONTEND=3000
+
+LETSENCRYPT_EMAIL=admin@example.com
+```
+
+These variables are required for automatic reverse proxy and HTTPS certificate generation through **nginx-proxy** and **letsencrypt-nginx-proxy-companion**.
+
+💡 **Tip:** In local mode, these variables are not used.  
+The containers are accessed directly through `localhost` and their exposed ports instead of domain names.
+
+---
+
+## 🌐 Access to the services
 
 Once the environment is up and running, the services will be available at:
 
@@ -73,4 +97,4 @@ Once the environment is up and running, the services will be available at:
 
 - Folders inside `runtime/` are generated dynamically and should not be committed to Git.
 - All containers use the `linux/amd64` platform to ensure cross-platform compatibility.
-- The external network `edc-network` must exist before running `docker-compose`, but the `init.sh` script will create it automatically if needed.
+- The external network `edc_network` must exist before running `docker-compose`, but the `start.sh` script will create it automatically if needed.
