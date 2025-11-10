@@ -1,0 +1,133 @@
+version: "3.8"
+
+services:
+  # --- Reverse proxy ---
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/etc/nginx/vhost.d"
+      - "/usr/share/nginx/html"
+      - "/var/run/docker.sock:/tmp/docker.sock:ro"
+      - "/etc/nginx/certs"
+      - ./config/proxy/my_custom.proxy_settings.conf:/etc/nginx/conf.d/my_custom.proxy_settings.conf
+    networks:
+      - edc_network
+    restart: always
+
+  letsencrypt-nginx-proxy-companion:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    container_name: letsencrypt-nginx-proxy-companion
+    environment:
+      - NGINX_PROXY_CONTAINER=nginx-proxy
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "/etc/nginx/certs"
+      - "/usr/share/nginx/html"
+    volumes_from:
+      - "nginx-proxy"
+    depends_on:
+      - nginx-proxy
+    networks:
+      - edc_network
+    restart: always
+
+  # --- Databases ---
+  mongo:
+    image: mongo:8.0
+    container_name: edc_mongo
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - edc_network
+
+  postgres:
+    image: postgres:15
+    container_name: edc_postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - edc_network
+
+  # --- Backend ---
+  backend:
+    image: agrixelsupc/edc_studio_backend:latest
+    container_name: edc_backend
+    platform: linux/amd64
+    expose:
+      - "8000"
+    environment:
+      MONGODB_URI: ${MONGODB_URI}
+      MONGODB_DB: ${MONGODB_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASS: ${POSTGRES_PASSWORD}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      RUNTIME_PATH: ${RUNTIME_PATH}
+      NETWORK_NAME: ${NETWORK_NAME}
+      TYPE: ${TYPE}
+      VIRTUAL_HOST: ${VIRTUAL_HOST_BACKEND}
+      VIRTUAL_PORT: ${VIRTUAL_PORT_BACKEND}
+      LETSENCRYPT_HOST: ${VIRTUAL_HOST_BACKEND}
+      LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./runtime:/app/runtime
+    depends_on:
+      - mongo
+    networks:
+      - edc_network
+    restart: always
+
+  # --- Data Pond ---
+  data_pond:
+    image: agrixelsupc/edc_data_pond:latest
+    container_name: edc_data_pond
+    platform: linux/amd64
+    expose:
+      - "8001"
+    environment:
+      VIRTUAL_HOST: ${VIRTUAL_HOST_DATAPOND}
+      VIRTUAL_PORT: ${VIRTUAL_PORT_DATAPOND}
+      LETSENCRYPT_HOST: ${VIRTUAL_HOST_DATAPOND}
+      LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
+    depends_on:
+      - backend
+    networks:
+      - edc_network
+    restart: always
+
+  # --- Frontend ---
+  frontend:
+    image: agrixelsupc/edc_studio:latest
+    container_name: edc_studio
+    platform: linux/amd64
+    expose:
+      - "3000"
+    environment:
+      VIRTUAL_HOST: ${VIRTUAL_HOST_FRONTEND}
+      VIRTUAL_PORT: ${VIRTUAL_PORT_FRONTEND}
+      LETSENCRYPT_HOST: ${VIRTUAL_HOST_FRONTEND}
+      LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
+    volumes:
+      - .env.frontend:/usr/share/nginx/html/assets/assets/.env
+    depends_on:
+      - backend
+    networks:
+      - edc_network
+    restart: always
+
+volumes:
+  mongo_data:
+  postgres_data:
+
+networks:
+  edc_network:
+    external: true
