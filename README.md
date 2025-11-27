@@ -5,7 +5,6 @@ This project provides a complete development and deployment environment for **ED
 - **MongoDB** as the main database.
 - **Postgres** as the main database of the EDCs.
 - **Backend** built with Python and FastAPI.
-- **Data Pond** as a microservice for data management or transformation.
 - **Frontend** built with Flutter Web.
 
 ---
@@ -17,7 +16,6 @@ services:
   mongo:         # MongoDB
   postgres:      # BBDD EDCs
   backend:       # Principal API of the EDC Studio system
-  data_pond:     # Additional microservice to store files
   frontend:      # Graphic interface for the user
 ```
 ---
@@ -65,11 +63,9 @@ Before running the production environment, make sure to configure your **Nginx**
 ```bash
 # Nginx / Let's Encrypt
 VIRTUAL_HOST_BACKEND=backend.example.com
-VIRTUAL_HOST_DATAPOND=datapond.example.com
 VIRTUAL_HOST_FRONTEND=app.example.com
 
 VIRTUAL_PORT_BACKEND=8000
-VIRTUAL_PORT_DATAPOND=8001
 VIRTUAL_PORT_FRONTEND=3000
 
 LETSENCRYPT_EMAIL=admin@example.com
@@ -88,7 +84,6 @@ Once the environment is up and running, the services will be available at:
 
 - **Frontend**: http://localhost:3000
 - **Backend**: http://localhost:8000
-- **Data Pond**: http://localhost:8001
 - **MongoDB**: mongodb://localhost:27017
 
 ---

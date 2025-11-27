@@ -43,17 +43,6 @@ services:
     networks:
       - edc_network
 
-  data_pond:
-    image: agrixelsupc/edc_data_pond:latest
-    container_name: edc_data_pond
-    platform: linux/amd64
-    ports:
-      - "8001:8001"
-    depends_on:
-      - backend
-    networks:
-      - edc_network
-
   frontend:
     image: agrixelsupc/edc_studio:latest
     container_name: edc_studio

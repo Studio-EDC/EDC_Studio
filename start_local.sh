@@ -67,7 +67,6 @@ echo "💧 Data Pond exposed on localhost:$DATA_POND_PORT"
 echo "📝 Setting local endpoints in $FRONTEND_ENV..."
 cat > "$FRONTEND_ENV" <<EOL
 ENDPOINT_BASE=http://localhost:${BACKEND_PORT}
-ENDPOINT_DATA_POND=http://localhost:${DATA_POND_PORT}
 EOL
 
 # --- 7. Start Docker containers ---

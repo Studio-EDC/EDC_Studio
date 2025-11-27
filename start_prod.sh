@@ -72,7 +72,6 @@ fi
 
 cat > "$FRONTEND_ENV" <<EOL
 ENDPOINT_BASE=https://${VIRTUAL_HOST_BACKEND}
-ENDPOINT_DATA_POND=https://${VIRTUAL_HOST_DATAPOND}
 EOL
 
 echo "✅ .env.frontend updated with production endpoints:"
