@@ -25,8 +25,7 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "/etc/nginx/certs"
       - "/usr/share/nginx/html"
-    volumes_from:
-      - "nginx-proxy"
+      - "/etc/nginx/vhost.d"
     depends_on:
       - nginx-proxy
     networks:
