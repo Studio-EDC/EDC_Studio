@@ -22,7 +22,6 @@ if ! grep -q "# Nginx" "$ENV_FILE"; then
 
 # Nginx
 VIRTUAL_HOST_BACKEND=example.backend.com
-VIRTUAL_HOST_DATAPOND=example.datapond.com
 VIRTUAL_HOST_FRONTEND=example.frontend.com
 
 VIRTUAL_PORT_BACKEND=8000
@@ -66,8 +65,8 @@ source "$ENV_FILE"
 set +a
 
 # Si faltan las variables, advertir
-if [[ -z "$VIRTUAL_HOST_BACKEND" || -z "$VIRTUAL_HOST_DATAPOND" ]]; then
-  echo "⚠️  Warning: VIRTUAL_HOST_BACKEND or VIRTUAL_HOST_DATAPOND not found in .env"
+if [[ -z "$VIRTUAL_HOST_BACKEND" ]]; then
+  echo "⚠️  Warning: VIRTUAL_HOST_BACKEND not found in .env"
 fi
 
 cat > "$FRONTEND_ENV" <<EOL
