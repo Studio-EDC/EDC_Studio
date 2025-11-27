@@ -8,10 +8,12 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - "/etc/nginx/vhost.d"
-      - "/usr/share/nginx/html"
-      - "/var/run/docker.sock:/tmp/docker.sock:ro"
-      - "/etc/nginx/certs"
+      - /etc/nginx/vhost.d
+      - /usr/share/nginx/html
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - nginx_certs:/etc/nginx/certs
+      - nginx_conf:/etc/nginx/conf.d
+      - acme_html:/usr/share/nginx/html
     networks:
       - edc_network
     restart: always
@@ -22,10 +24,11 @@ services:
     environment:
       - NGINX_PROXY_CONTAINER=nginx-proxy
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - "/etc/nginx/certs"
-      - "/usr/share/nginx/html"
-      - "/etc/nginx/vhost.d"
+      - nginx_certs:/etc/nginx/certs
+      - nginx_conf:/etc/nginx/conf.d
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - acme_data:/etc/acme.sh
+      - acme_html:/usr/share/nginx/html
     depends_on:
       - nginx-proxy
     networks:
@@ -106,6 +109,10 @@ services:
 volumes:
   mongo_data:
   postgres_data:
+  nginx_certs:
+  nginx_conf:
+  acme_data:
+  acme_html:
 
 networks:
   edc_network:
