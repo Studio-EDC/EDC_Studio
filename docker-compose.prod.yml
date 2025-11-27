@@ -12,7 +12,6 @@ services:
       - "/usr/share/nginx/html"
       - "/var/run/docker.sock:/tmp/docker.sock:ro"
       - "/etc/nginx/certs"
-      - ./config/proxy/my_custom.proxy_settings.conf:/etc/nginx/conf.d/my_custom.proxy_settings.conf
     networks:
       - edc_network
     restart: always
