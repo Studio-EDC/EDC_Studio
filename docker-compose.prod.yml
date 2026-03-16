@@ -58,7 +58,7 @@ services:
 
   minio:
     image: minio/minio:latest
-    container_name: edc_minio
+    container_name: edc-minio
     expose:
       - "9000"
       - "9001"
