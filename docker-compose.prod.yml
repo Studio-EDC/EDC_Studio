@@ -56,6 +56,22 @@ services:
     networks:
       - edc_network
 
+  minio:
+    image: minio/minio:latest
+    container_name: edc_minio
+    expose:
+      - "9000"
+      - "9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+    networks:
+      - edc_network
+    restart: always
+
   # --- Backend ---
   backend:
     image: agrixelsupc/edc_studio_backend:latest
@@ -73,6 +89,12 @@ services:
       RUNTIME_PATH: ${RUNTIME_PATH}
       NETWORK_NAME: ${NETWORK_NAME}
       TYPE: ${TYPE}
+      MINIO_ENDPOINT: ${MINIO_ENDPOINT}
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      MINIO_BUCKET: ${MINIO_BUCKET}
+      MINIO_REGION: ${MINIO_REGION}
+      MINIO_USE_SSL: ${MINIO_USE_SSL}
       VIRTUAL_HOST: ${VIRTUAL_HOST_BACKEND}
       VIRTUAL_PORT: ${VIRTUAL_PORT_BACKEND}
       LETSENCRYPT_HOST: ${VIRTUAL_HOST_BACKEND}
@@ -82,6 +104,8 @@ services:
       - ./runtime:/app/runtime
     depends_on:
       - mongo
+      - postgres
+      - minio
     networks:
       - edc_network
     restart: always
@@ -109,6 +133,7 @@ services:
 volumes:
   mongo_data:
   postgres_data:
+  minio_data:
   nginx_certs:
   nginx_conf:
   acme_data:

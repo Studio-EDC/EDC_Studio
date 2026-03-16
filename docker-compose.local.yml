@@ -2,6 +2,8 @@ services:
   mongo:
     image: mongo:8.0
     container_name: edc_mongo
+    ports:
+      - "27017:27017"
     volumes:
       - mongo_data:/data/db
     networks:
@@ -10,12 +12,29 @@ services:
   postgres:
     image: postgres:15
     container_name: edc_postgres
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - edc_network
+
+  minio:
+    image: minio/minio:latest
+    container_name: edc_minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
     networks:
       - edc_network
 
@@ -35,11 +54,19 @@ services:
       RUNTIME_PATH: ${RUNTIME_PATH}
       NETWORK_NAME: ${NETWORK_NAME}
       TYPE: ${TYPE}
+      MINIO_ENDPOINT: ${MINIO_ENDPOINT}
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      MINIO_BUCKET: ${MINIO_BUCKET}
+      MINIO_REGION: ${MINIO_REGION}
+      MINIO_USE_SSL: ${MINIO_USE_SSL}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./runtime:/app/runtime
     depends_on:
       - mongo
+      - postgres
+      - minio
     networks:
       - edc_network
 
@@ -59,6 +86,7 @@ services:
 volumes:
   mongo_data:
   postgres_data:
+  minio_data:
 
 networks:
   edc_network:
