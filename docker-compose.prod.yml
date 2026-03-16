@@ -65,6 +65,10 @@ services:
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      VIRTUAL_HOST: ${VIRTUAL_HOST_MINIO}
+      VIRTUAL_PORT: ${VIRTUAL_PORT_MINIO}
+      LETSENCRYPT_HOST: ${VIRTUAL_HOST_MINIO}
+      LETSENCRYPT_EMAIL: ${LETSENCRYPT_MINIO}
     command: server /data --console-address ":9001"
     volumes:
       - minio_data:/data
