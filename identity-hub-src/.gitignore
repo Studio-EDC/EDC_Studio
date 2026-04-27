@@ -1,0 +1,22 @@
+
+# Ignore Gradle project-specific cache directory
+.gradle/
+
+# Ignore all build output directories at any level
+**/build/
+out/
+
+.idea/
+
+.terraform*
+*terraform.tfstate*
+
+
+#Ignore data_base folder
+data_base/
+
+postgres-data-consumer/
+postgres-data-provider/
+pg-upcxels-access-control/
+upcxels-access-control/
+

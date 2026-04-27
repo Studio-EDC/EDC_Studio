@@ -1,0 +1,36 @@
+stages:
+  - build
+  - push
+
+before_script:
+  - echo "Logging into Harbor registry..."
+  - docker login $HARBOR_REGISTRY_URL -u $HARBOR_USERNAME -p $HARBOR_PASSWORD
+
+build_image:
+  stage: build
+  script:
+    - ./gradlew clean build
+    - ./gradlew dockerize -Ppersistence=true
+  only:
+    - main
+    - development
+  tags:
+    - upcxelsrunner
+
+push_to_harbor:
+  stage: push
+  script:
+    - echo "Tagging and pushing Docker images to Harbor..."
+    - |
+      if [ "$CI_COMMIT_BRANCH" = "main" ]; then
+        TAG=$(cat VERSION)
+      else
+        TAG=latest
+      fi
+      docker tag identity-hub:$TAG $HARBOR_REGISTRY_URL/upcxels/identity-hub:$TAG
+      docker push $HARBOR_REGISTRY_URL/upcxels/identity-hub:$TAG
+  only:
+    - main
+    - development
+  tags:
+    - upcxelsrunner

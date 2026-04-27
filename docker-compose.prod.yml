@@ -76,6 +76,53 @@ services:
       - edc_network
     restart: always
 
+  identity-hub-vault:
+    image: hashicorp/vault:1.15
+    container_name: edc_identity_hub_vault
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: root
+      VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8200
+    cap_add:
+      - IPC_LOCK
+    command: server -dev
+    expose:
+      - "8200"
+    volumes:
+      - ./runtime/identity-hub/vault-bootstrap:/vault/bootstrap:ro
+    networks:
+      - edc_network
+    restart: always
+
+  identity-hub:
+    image: ${IDENTITY_HUB_IMAGE:-identity-hub:latest}
+    build:
+      context: ./identity-hub-src
+      dockerfile: Dockerfile
+    pull_policy: never
+    container_name: edc_identity_hub
+    platform: linux/amd64
+    expose:
+      - "8181"
+      - "8182"
+      - "10001"
+    environment:
+      EDC_DATASOURCE_DEFAULT_URL: jdbc:postgresql://edc_postgres:5432/${POSTGRES_DB}
+      EDC_DATASOURCE_DEFAULT_USER: ${POSTGRES_USER}
+      EDC_DATASOURCE_DEFAULT_PASSWORD: ${POSTGRES_PASSWORD}
+      EDC_DATASOURCE_DEFAULT_DRIVER: org.postgresql.Driver
+      EDC_DATASOURCE_DEFAULT_NAME: default
+      EDC_IH_API_SUPERUSER_ID: ${IDENTITY_HUB_SUPERUSER_ID:-super-user}
+      EDC_IH_API_SUPERUSER_KEY: ${IDENTITY_HUB_SUPERUSER_KEY:-change-me}
+    volumes:
+      - ./identity-hub/configuration:/app/configuration:ro
+      - ./runtime/identity-hub/participants:/app/identity-hub/participants
+      - ./runtime/identity-hub/shared:/app/identity-hub/shared
+    depends_on:
+      - identity-hub-vault
+    networks:
+      - edc_network
+    restart: always
+
   # --- Backend ---
   backend:
     image: agrixelsupc/edc_studio_backend:latest
@@ -100,6 +147,8 @@ services:
       MINIO_REGION: ${MINIO_REGION}
       MINIO_USE_SSL: ${MINIO_USE_SSL}
       MINIO_PUBLIC_URL: ${MINIO_PUBLIC_URL}
+      IDENTITY_HUB_BASE_URL: ${IDENTITY_HUB_BASE_URL:-http://edc_identity_hub:8182/api/identity}
+      IDENTITY_HUB_CREDENTIALS_BASE_URL: ${IDENTITY_HUB_CREDENTIALS_BASE_URL:-http://edc_identity_hub:10001/api/credentials}
       VIRTUAL_HOST: ${VIRTUAL_HOST_BACKEND}
       VIRTUAL_PORT: ${VIRTUAL_PORT_BACKEND}
       LETSENCRYPT_HOST: ${VIRTUAL_HOST_BACKEND}
@@ -111,6 +160,7 @@ services:
       - mongo
       - postgres
       - minio
+      - identity-hub
     networks:
       - edc_network
     restart: always

@@ -4,6 +4,7 @@ This project provides a complete development and deployment environment for **ED
 
 - **MongoDB** as the main database.
 - **Postgres** as the main database of the EDCs.
+- **Identity Hub** shared by all managed connectors.
 - **Backend** built with Python and FastAPI.
 - **Frontend** built with Flutter Web.
 
@@ -15,6 +16,7 @@ This project provides a complete development and deployment environment for **ED
 services:
   mongo:         # MongoDB
   postgres:      # BBDD EDCs
+  identity-hub:  # Shared Identity Hub
   backend:       # Principal API of the EDC Studio system
   frontend:      # Graphic interface for the user
 ```
@@ -53,6 +55,14 @@ or
 
 This:
 - Starts all containers defined in docker-compose.yml.
+
+The shared Identity Hub is now built directly from the local UPCxels source
+under `./identity-hub-src`, so no manual pre-build from `../edc_connector` is
+required.
+
+```bash
+docker compose -f docker-compose.local.yml build identity-hub
+```
 
 ---
 
