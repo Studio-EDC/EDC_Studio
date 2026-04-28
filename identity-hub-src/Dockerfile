@@ -3,6 +3,7 @@ FROM gradle:8.10-jdk17 AS build
 WORKDIR /src
 COPY . .
 
+RUN sed -i 's/\r$//' gradlew && chmod +x gradlew
 RUN ./gradlew :launchers:identity-hub:shadowJar -Ppersistence=true
 
 FROM eclipse-temurin:17-jre-alpine
