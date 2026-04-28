@@ -64,6 +64,23 @@ required.
 docker compose -f docker-compose.local.yml build identity-hub
 ```
 
+Managed connectors still run from a Docker image. To use the DCP-enabled
+connector runtime from `../edc_connector`, build and tag that image first and
+then expose it to the backend through `EDC_CONNECTOR_IMAGE`:
+
+```bash
+cd ../edc_connector
+docker build -t edc-connector:latest .
+```
+
+```bash
+# .env
+EDC_CONNECTOR_IMAGE=edc-connector:latest
+```
+
+After redeploying the backend, stopping and starting a managed connector will
+regenerate its runtime `docker-compose.yml` with that image.
+
 ---
 
 ## ⚙️ Environment Configuration

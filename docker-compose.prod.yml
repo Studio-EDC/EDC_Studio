@@ -147,6 +147,7 @@ services:
       MINIO_REGION: ${MINIO_REGION}
       MINIO_USE_SSL: ${MINIO_USE_SSL}
       MINIO_PUBLIC_URL: ${MINIO_PUBLIC_URL}
+      EDC_CONNECTOR_IMAGE: ${EDC_CONNECTOR_IMAGE:-itziarmensaupc/connector:0.0.6}
       IDENTITY_HUB_BASE_URL: ${IDENTITY_HUB_BASE_URL:-http://edc_identity_hub:8182/api/identity}
       IDENTITY_HUB_CREDENTIALS_BASE_URL: ${IDENTITY_HUB_CREDENTIALS_BASE_URL:-http://edc_identity_hub:10001/api/credentials}
       VIRTUAL_HOST: ${VIRTUAL_HOST_BACKEND}
