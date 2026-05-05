@@ -1,0 +1,19 @@
+# Federated Catalog under the same public host.
+# This is appended by jwilder/nginx-proxy inside the server block for
+# api.edcstudio.datagora.eu.
+
+location /fc/ {
+    proxy_pass http://datagora_federated_catalog:8183/api/catalog/;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+}
+
+location /fc-health/ {
+    proxy_pass http://datagora_federated_catalog:8181/api/;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+}

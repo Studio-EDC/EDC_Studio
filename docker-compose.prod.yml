@@ -8,7 +8,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - /etc/nginx/vhost.d
+      - ./nginx/vhost.d:/etc/nginx/vhost.d
       - /usr/share/nginx/html
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - nginx_certs:/etc/nginx/certs
@@ -24,6 +24,7 @@ services:
     environment:
       - NGINX_PROXY_CONTAINER=nginx-proxy
     volumes:
+      - ./nginx/vhost.d:/etc/nginx/vhost.d
       - nginx_certs:/etc/nginx/certs
       - nginx_conf:/etc/nginx/conf.d
       - /var/run/docker.sock:/var/run/docker.sock:ro
