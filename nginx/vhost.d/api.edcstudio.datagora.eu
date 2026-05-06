@@ -2,6 +2,9 @@
 # This is appended by jwilder/nginx-proxy inside the server block for
 # api.edcstudio.datagora.eu.
 
+# Allow dataset uploads larger than nginx's default 1 MB request limit.
+client_max_body_size 50M;
+
 location /fc/ {
     proxy_pass http://datagora_federated_catalog:8183/api/catalog/;
     proxy_set_header Host $host;

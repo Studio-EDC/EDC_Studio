@@ -81,6 +81,27 @@ EDC_CONNECTOR_IMAGE=edc-connector:latest
 After redeploying the backend, stopping and starting a managed connector will
 regenerate its runtime `docker-compose.yml` with that image.
 
+## Connector State Cleanup
+
+To inspect connector state before cleanup:
+
+```bash
+./scripts/cleanup_connector_state.sh
+```
+
+To clean all connector Postgres databases and restart the affected connector
+containers automatically:
+
+```bash
+./scripts/cleanup_connector_state.sh --execute
+```
+
+To create SQL backups before cleanup:
+
+```bash
+./scripts/cleanup_connector_state.sh --execute --backup-dir ~/edc-db-backups
+```
+
 ---
 
 ## ⚙️ Environment Configuration
@@ -96,6 +117,9 @@ VIRTUAL_PORT_BACKEND=8000
 VIRTUAL_PORT_FRONTEND=3000
 
 LETSENCRYPT_EMAIL=admin@example.com
+
+# Optional upload limit for /files/upload
+DATA_POND_MAX_FILE_SIZE_MB=50
 ```
 
 These variables are required for automatic reverse proxy and HTTPS certificate generation through **nginx-proxy** and **letsencrypt-nginx-proxy-companion**.
