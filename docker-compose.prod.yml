@@ -153,6 +153,10 @@ services:
       IDENTITY_HUB_BASE_URL: ${IDENTITY_HUB_BASE_URL:-http://edc_identity_hub:8182/api/identity}
       IDENTITY_HUB_CREDENTIALS_BASE_URL: ${IDENTITY_HUB_CREDENTIALS_BASE_URL:-http://edc_identity_hub:10001/api/credentials}
       FEDERATED_CATALOG_API_KEY: ${FEDERATED_CATALOG_API_KEY}
+      FEDERATED_CATALOG_IMAGE: ${FEDERATED_CATALOG_IMAGE:-datagora/catalog-datagora:local}
+      FEDERATED_CATALOG_PUBLIC_BASE_URL: ${FEDERATED_CATALOG_PUBLIC_BASE_URL:-https://api.edcstudio.datagora.eu}
+      FEDERATED_CATALOG_RUNTIME_LOCAL_ROOT: ${FEDERATED_CATALOG_RUNTIME_LOCAL_ROOT:-/app/runtime}
+      FEDERATED_CATALOG_NGINX_VHOST_FILE: ${FEDERATED_CATALOG_NGINX_VHOST_FILE:-/app/nginx-vhost/api.edcstudio.datagora.eu}
       VIRTUAL_HOST: ${VIRTUAL_HOST_BACKEND}
       VIRTUAL_PORT: ${VIRTUAL_PORT_BACKEND}
       LETSENCRYPT_HOST: ${VIRTUAL_HOST_BACKEND}
@@ -160,6 +164,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./runtime:/app/runtime
+      - ./nginx/vhost.d:/app/nginx-vhost
     depends_on:
       - mongo
       - postgres
