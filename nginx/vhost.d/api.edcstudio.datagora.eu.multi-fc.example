@@ -1,0 +1,21 @@
+# Path-based multi-FC example.
+# Copy the generated location blocks from each runtime's nginx-paths.conf file
+# into the real vhost file `api.edcstudio.datagora.eu`.
+#
+# Example:
+#
+# location /fc-agro/ {
+#     proxy_pass http://datagora_federated_catalog_agro:8183/api/catalog/;
+#     proxy_set_header Host $host;
+#     proxy_set_header X-Real-IP $remote_addr;
+#     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+#     proxy_set_header X-Forwarded-Proto $scheme;
+# }
+#
+# location /fc-health-agro/ {
+#     proxy_pass http://datagora_federated_catalog_agro:8181/api/;
+#     proxy_set_header Host $host;
+#     proxy_set_header X-Real-IP $remote_addr;
+#     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+#     proxy_set_header X-Forwarded-Proto $scheme;
+# }
